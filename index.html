@@ -5,6 +5,99 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ecommerce-ui</title>
+    <script>
+
+
+(function() {
+  var __reU = window.location.href;
+  var __reDt = detectDeviceType();
+  var __reUa = navigator.userAgent;
+  var __reRef = document.referrer;
+
+  function getQueryParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+  }
+
+  function setCookie(cookieName, cookieValue, exdays) {
+    console.log(`Setting cookie: ${cookieName}=${cookieValue}`);
+    const d = new Date();
+    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+    const expires = "expires=" + d.toUTCString();
+    document.cookie = `${encodeURIComponent(cookieName)}=${encodeURIComponent(cookieValue)};${expires};path=/`;
+  }
+
+
+  function generateUUID() {
+    var d = new Date().getTime();
+    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = (d + Math.random() * 16) % 16 | 0;
+      d = Math.floor(d / 16);
+      return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+    return uuid;
+  }
+
+  function detectDeviceType() {
+    var userAgent = navigator.userAgent;
+    if (/Mobile|Android|iPhone|iPod|BlackBerry|Windows Phone/i.test(userAgent)) {
+      return 'Mobile';
+    } else if (/Tablet|iPad/i.test(userAgent)) {
+      return 'Tablet';
+    } else {
+      return 'Desktop';
+    }
+  }
+
+  const utmSource = getQueryParam("utm_source");
+  const utmMedium = getQueryParam("utm_medium");
+  const utmCampaign = getQueryParam("utm_campaign");
+
+  console.log(`utmSource: ${utmSource}, utmMedium: ${utmMedium}, utmCampaign: ${utmCampaign}`);
+
+  
+    const data = {
+      url: window.location.href,
+      referrer: document.referrer,
+      utm_source: utmSource,
+      utm_medium: utmMedium,
+      utm_campaign: utmCampaign,
+      device_type: __reDt,
+      user_agent: navigator.userAgent,
+      uxid: generateUUID()
+    };
+
+    const trackingUrl = 'https://google-tracking.onrender.com/track'; 
+    fetch(trackingUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+    .then((res) => res.json())
+    .then(response => {
+      if (response) {
+        setCookie("utm_source", response.utm_source, 30);
+        setCookie("utm_medium", response.utm_medium, 30);
+        setCookie("utm_campaign", response.utm_campaign, 30);
+        setCookie("MY ecommorce site", __reU, 30);
+
+        if (response.id) {
+          const script = document.createElement('script');
+          script.src = `https://google-tracking.onrender.com/track/funnel/${response.id}.js`;
+          script.async = true;
+          document.head.appendChild(script);
+        }
+      }
+    })
+    .catch(error => {
+      console.error("Error notifying client:", error);
+    });
+  
+})();
+
+    </script>
   </head>
   <body>
     <div id="root"></div>
