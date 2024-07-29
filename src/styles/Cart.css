@@ -1,0 +1,10 @@
+/* src/styles/Cart.css */
+.cart {
+    padding: 20px;
+  }
+  .cart .total {
+    font-size: 1.5em;
+    margin-top: 20px;
+    text-align: right;
+  }
+  
